@@ -1,7 +1,12 @@
+// Task 1
 function cashRegister() {
   // Takes the input from the price and cash box and puts them in a variable
   let price = parseFloat(document.getElementById("num1").value);
   let cash = parseFloat(document.getElementById("num2").value);
+
+  let changeDue = cash - price;
+  let cidSum = 0;
+
   // Variables for output
   let status = "";
   // Array for Change
@@ -30,18 +35,29 @@ function cashRegister() {
     ["ONE HUNDRED", 100]
   ];
 
-  // If Statement where if the cash is less than price it out puts Incorrect Payment
+  for (let i = 0; i < cid.length; i++) {
+    cidSum += cid[i][1];
+  }
+
+  // Task 2: If Statement where if the cash is less than price it out puts Incorrect Payment
   if (cash < price) {
     status = "Incorrect Payment";
-    change = "No Change Needed";
+    // Task 3
+    change = 0;
   } else if (isNaN(cash) || isNaN(price))  {
     status = "Invalid Input (Make sure you enter a number)"
     change = "Invalid Input (Make sure you enter a number)"
-  } 
+  } else if (cidSum === changeDue) {
+    status = "Closed";
+    change = cid;
+  }
+
+
 
   // Outputs the Status and Change to the HTML Page
   document.getElementById("status").innerHTML = "Status: " +status;
   document.getElementById("change").innerHTML = "Change: " +change;
+
 }
 
 // When the button is clicked it will call upon the cashRegister Function
