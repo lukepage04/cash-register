@@ -7,8 +7,6 @@ function cashRegister() {
   let changeDue = cash - price;
   let cidSum = 0;
 
-  // Variables for output
-  let status = "";
   // Array for Change
   let change = [
     ["PENNY", 0],
@@ -21,7 +19,11 @@ function cashRegister() {
     ["TWENTY", 0],
     ["ONE HUNDRED", 0]
   ];
-
+  //The 'result' object to be returned 
+  let result = {
+    status: "",
+    change: [""]
+  };
   // Array for Cash in Drawer
   let cid = [
     ["PENNY", 1.01],
@@ -34,29 +36,31 @@ function cashRegister() {
     ["TWENTY", 60],
     ["ONE HUNDRED", 100]
   ];
-
-  for (let i = 0; i < cid.length; i++) {
+  
+  /* Broken for a some weird reason?
+    for (let i = 0; i < cid.length; i++) {
     cidSum += cid[i][1];
   }
-
+  */
+  
   // Task 2: If Statement where if the cash is less than price it out puts Incorrect Payment
   if (cash < price) {
-    status = "Incorrect Payment";
+    result.status = "Incorrect Payment";
     // Task 3
-    change = 0;
-  } else if (isNaN(cash) || isNaN(price))  {
-    status = "Invalid Input (Make sure you enter a number)"
-    change = "Invalid Input (Make sure you enter a number)"
-  } else if (cidSum === changeDue) {
-    status = "Closed";
-    change = cid;
+    result.change = 0;
+  } else if (isNaN(cash) || isNaN(price)) {
+    result.status = "Invalid Input (Make sure you enter a number)"
+    result.change = "Invalid Input (Make sure you enter a number)"
+  } else if (cidSum == changeDue) {
+    result.status = "Closed";
+    result.change = cid;
   }
 
 
 
   // Outputs the Status and Change to the HTML Page
-  document.getElementById("status").innerHTML = "Status: " +status;
-  document.getElementById("change").innerHTML = "Change: " +change;
+  document.getElementById("status").innerHTML = "Status: " + result.status;
+  document.getElementById("change").innerHTML = "Change: " + result.change;
 
 }
 
