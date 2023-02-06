@@ -5,23 +5,16 @@ function cashRegister() {
   let cash = parseFloat(document.getElementById("num2").value);
 
   let changeDue = cash - price;
-  let cidSum = 0;
+  let currencyUnit = [0.01, 0.05, 0.1, 0.25, 1, 5, 10, 20, 100];
+  let change = [];
 
-  // Variables for output
-  let status = "";
-  // Array for Change
-  let change = [
-    ["PENNY", 0],
-    ["NICKEL", 0],
-    ["DIME", 0],
-    ["QUARTER", 0],
-    ["ONE", 0],
-    ["FIVE", 0],
-    ["TEN", 0],
-    ["TWENTY", 0],
-    ["ONE HUNDRED", 0]
-  ];
 
+
+  //The 'result' object to be returned 
+  let result = {
+    status: "",
+    change: [""]
+  };
   // Array for Cash in Drawer
   let cid = [
     ["PENNY", 1.01],
@@ -35,29 +28,62 @@ function cashRegister() {
     ["ONE HUNDRED", 100]
   ];
 
-  for (let i = 0; i < cid.length; i++) {
-    cidSum += cid[i][1];
+  //Task 6: Define a variable called cidSum that holds the cash-in-drawer value
+  function cidSum() {
+    let cidSum = 0;
+    for (i = 0; i < cid.length; i++) {
+      cidSum += cid[i][1];
+    }
+    return cidSum.toFixed(2);
   }
+
+  // Task 8 + 10 Calculate Change that needs to be given
+  for (let i = cid.length - 1; i >= 0; i--) {
+    let coinName = cid[i][0];
+    let coinTotal = cid[i][1];
+    let coinValue = currencyUnit[i];
+    let coinAmount = 0;
+
+    while (changeDue >= coinValue && coinTotal > 0) {
+      changeDue -= coinValue;
+      coinTotal -= coinValue;
+      coinAmount += coinValue;
+      changeDue = Math.round(changeDue * 100) / 100;
+    }
+
+    if (coinAmount > 0) {
+      change.push([coinName, coinAmount]);
+    }
+  }
+
+  console.log(cidSum());
 
   // Task 2: If Statement where if the cash is less than price it out puts Incorrect Payment
   if (cash < price) {
-    status = "Incorrect Payment";
+    result.status = "Incorrect Payment";
     // Task 3
-    change = 0;
-  } else if (isNaN(cash) || isNaN(price))  {
-    status = "Invalid Input (Make sure you enter a number)"
-    change = "Invalid Input (Make sure you enter a number)"
-  } else if (cidSum === changeDue) {
-    status = "Closed";
-    change = cid;
+    result.change = "N/A (You have given us less than the price)";
+  } else if (isNaN(cash) || isNaN(price)) {
+    result.status = "Invalid Input (Make sure you enter a number)"
+    result.change = "Invalid Input (Make sure you enter a number)"
+  } else if (price == cash) {
+    result.status = "Open";
+    result.change = "N/A (No Change Needed)";
+  } else if (cidSum() == changeDue) { // Task 9
+    result.status = "Closed";
+    result.change = cid;
+  } else if (cidSum() < changeDue) { //Task 7
+    result.status = "Insufficient Funds";
+    result.change = "N/A (We do not have enough change for you, your change comes to: " + change + ")";
+  } else if (cidSum() > changeDue) {
+    result.status = "Open";
+    result.change = change; // Task 10 - not finished
   }
 
 
-
   // Outputs the Status and Change to the HTML Page
-  document.getElementById("status").innerHTML = "Status: " +status;
-  document.getElementById("change").innerHTML = "Change: " +change;
-
+  document.getElementById("status").innerHTML = "Status: " + result.status;
+  document.getElementById("change").innerHTML = "Change: " + result.change;
 }
 
 // When the button is clicked it will call upon the cashRegister Function
